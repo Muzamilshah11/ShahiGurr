@@ -1,0 +1,6 @@
+{
+  "name": "Shahi Gurr Co. - شاہی گُڑ Premium Artisanal Pakistani Gurr",
+  "description": "Luxury direct-to-consumer artisanal Pakistani Shahi Gurr with rich roasted nuts and traditional desi sweetness. Live AI Voice Order Receptionist in Urdu, Punjabi, Pashto, Sindhi, Balochi, and English with Cash on Delivery.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,215 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model StoreSettings {
+  id                   String   @id @default("default")
+  storeName            String   @default("Khyber Gurr Co.")
+  urduStoreName        String   @default("خیبر گُڑ کمپنی")
+  whatsappNumber       String   @default("923001234567")
+  productName          String   @default("Premium Natural Gurr")
+  urduProductName      String   @default("پریمیم قدرتی گُڑ")
+  basePrice            Float    @default(699)
+  originalPrice        Float    @default(999)
+  discountPercent      Int      @default(30)
+  deliveryCharges      Float    @default(199)
+  freeDeliveryThreshold Float   @default(2000)
+  deliveryText         String   @default("Delivery across Pakistan in 2-4 business days")
+  urduDeliveryText     String   @default("پورے پاکستان میں 2 سے 4 دن میں ڈیلیوری")
+  easypaisaTitle       String   @default("Khyber Gurr Co")
+  easypaisaNumber      String   @default("03001234567")
+  jazzcashTitle        String   @default("Khyber Gurr Co")
+  jazzcashNumber       String   @default("03001234567")
+  bankName             String   @default("Meezan Bank Ltd")
+  bankTitle            String   @default("Khyber Gurr Enterprises")
+  bankAccountNumber    String   @default("01020304050607")
+  bankIban             String   @default("PK12MEZN0001020304050607")
+  sheetsWebhookUrl     String   @default("")
+  facebookPixelId      String   @default("")
+  heroHeading          String   @default("Pure Desi Gurr, Rich in Traditional Taste")
+  heroUrduHeading      String   @default("خالص دیسی گُڑ — روایتی ذائقے کی مٹھاس")
+  heroDescription      String   @default("Handcrafted traditionally from pure unrefined sugarcane juice, embedded with roasted premium cashews, crunchy peanuts, and natural seeds.")
+  heroUrduDescription  String   @default("خالص گنے کے رس سے تیار کردہ، جس میں شامل ہیں بھنے ہوئے کاجو، مونگ پھلی، ناریل اور خوشبودار سونف۔ روایتی لذت اور قدرتی مٹھاس کا شاہکار۔")
+  heroVideoUrl         String   @default("")
+  updatedAt            DateTime @updatedAt
+}
+
+model Product {
+  id              String           @id @default("default-product")
+  name            String           @default("Premium Natural Gurr")
+  urduName        String           @default("پریمیم قدرتی گُڑ")
+  tagline         String           @default("Traditional Gurr with Premium Nuts & Seeds")
+  urduTagline     String           @default("روایتی گُڑ، معیاری میوہ جات اور بیجوں کے ساتھ")
+  description     String
+  urduDescription String
+  active          Boolean          @default(true)
+  variants        ProductVariant[]
+  media           ProductMedia[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+}
+
+model ProductVariant {
+  id              String   @id @default(uuid())
+  productId       String   @default("default-product")
+  product         Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  name            String
+  urduName        String
+  weight          String   // e.g., "500g", "1kg", "2kg"
+  price           Float
+  originalPrice   Float
+  discount        Int      @default(0)
+  stock           Int      @default(100)
+  badge           String?  // e.g., "Most Popular", "Best Value"
+  urduBadge       String?  // e.g., "سب سے مقبول", "بہترین بچت"
+  description     String?
+  urduDescription String?
+  isDefault       Boolean  @default(false)
+  isActive        Boolean  @default(true)
+  sortOrder       Int      @default(0)
+  orders          Order[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model ProductMedia {
+  id          String   @id @default(uuid())
+  productId   String   @default("default-product")
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  title       String
+  urduTitle   String
+  imageUrl    String
+  category    String   @default("showcase") // showcase, texture, packaging, lifestyle
+  isHero      Boolean  @default(false)
+  isVideo     Boolean  @default(false)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+}
+
+model Ingredient {
+  id              String   @id @default(uuid())
+  name            String
+  urduName        String
+  description     String
+  urduDescription String
+  iconName        String   @default("Sparkles")
+  sortOrder       Int      @default(0)
+  isActive        Boolean  @default(true)
+}
+
+model Benefit {
+  id              String   @id @default(uuid())
+  title           String
+  urduTitle       String
+  description     String
+  urduDescription String
+  iconName        String   @default("CheckCircle")
+  sortOrder       Int      @default(0)
+  isActive        Boolean  @default(true)
+}
+
+model Nutrition {
+  id              String   @id @default("default-nutrition")
+  servingSize     String   @default("100g")
+  urduServingSize String   @default("100 گرام")
+  calories        String   @default("383 kcal")
+  carbohydrates   String   @default("85g")
+  sugars          String   @default("80g (Natural)")
+  protein         String   @default("3.8g")
+  fat             String   @default("4.2g")
+  fiber           String   @default("1.5g")
+  iron            String   @default("11mg (61% DV)")
+  magnesium       String   @default("70mg")
+  potassium       String   @default("1050mg")
+  disclaimer      String   @default("Nutritional values may vary depending on ingredients and natural batch preparation.")
+  urduDisclaimer  String   @default("غذائی معلومات اجزاء اور روایتی تیاری کے طریقے کے مطابق مختلف ہو سکتی ہیں۔")
+  updatedAt       DateTime @updatedAt
+}
+
+model Review {
+  id               String   @id @default(uuid())
+  customerName     String
+  urduCustomerName String?
+  city             String
+  urduCity         String?
+  rating           Int      @default(5)
+  comment          String
+  urduComment      String?
+  isVerified       Boolean  @default(true)
+  isDemo           Boolean  @default(true)
+  dateText         String   @default("Recently")
+  isActive         Boolean  @default(true)
+  sortOrder        Int      @default(0)
+  createdAt        DateTime @default(now())
+}
+
+model FAQ {
+  id           String   @id @default(uuid())
+  question     String
+  urduQuestion String
+  answer       String
+  urduAnswer   String
+  sortOrder    Int      @default(0)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+}
+
+model Order {
+  id                   String               @id @default(uuid())
+  orderId              String               @unique // ORDER-XXXXXX
+  customerName         String
+  phone                String
+  whatsapp             String?
+  city                 String
+  address              String
+  deliveryInstructions String?
+  email                String?
+  variantId            String?
+  variant              ProductVariant?      @relation(fields: [variantId], references: [id])
+  variantName          String
+  quantity             Int                  @default(1)
+  unitPrice            Float
+  subtotal             Float
+  deliveryCharge       Float                @default(0)
+  discount             Float                @default(0)
+  total                Float
+  paymentMethod        String               @default("cod") // cod, easypaisa, jazzcash, bank
+  transactionId        String?
+  paymentStatus        String               @default("pending") // pending, paid, failed, refunded
+  orderStatus          String               @default("pending") // pending, confirmed, dispatched, delivered, cancelled
+  courierName          String?              // TCS, Leopards, PostEx, Trax, CallCourier, M&P
+  trackingNumber       String?
+  dispatchNotes        String?
+  statusHistory        OrderStatusHistory[]
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @updatedAt
+
+  @@index([orderId])
+  @@index([phone])
+  @@index([createdAt])
+  @@index([orderStatus])
+  @@index([paymentStatus])
+}
+
+model OrderStatusHistory {
+  id        String   @id @default(uuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  status    String
+  notes     String?
+  changedBy String   @default("system")
+  timestamp DateTime @default(now())
+}
+
+model AdminUser {
+  id           String   @id @default(uuid())
+  username     String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
